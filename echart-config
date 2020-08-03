@@ -1,0 +1,846 @@
+import icon1 from "../img/home/icon-d.png";
+import icon2 from "../img/home/icon-sn.png";
+import icon3 from "../img/home/icon-trq.png";
+import icon4 from "../img/home/icon-m.png";
+import icon5 from "../img/home/icon-szq.png";
+const iconArray = [icon1, icon2, icon3, icon4, icon5];
+// 设备启停状态
+export const optionDevice = {
+    title: {
+        show: false
+    },
+    tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)'
+    },
+    legend: {
+        left: 'center',
+        top: 'bottom',
+        icon: 'roundRect',
+        itemHeight: 8, // 设置高度
+        data: ['启动', '开机', '关机'],
+    },
+    color: [
+        "#53bcff", "#ffca59",
+    ],
+    toolbox: {
+        show: false,
+    },
+    series: [
+        {
+            name: '面积模式',
+            type: 'pie',
+            radius: '60%',
+            center: ['50%', '50%'],
+            label: { formatter: '{b}\n{d}%', },
+            roseType: 'area',
+            data: [
+                { value: 10, name: '启动' },
+                { value: 15, name: '开机' },
+                { value: 15, name: '关机' },
+
+            ]
+        }
+    ]
+}
+// 警告统计分析
+export const optionWarning = (data1, data2) => {
+    let options = {
+        title: {
+            show: false
+        },
+        tooltip: {
+            trigger: 'item',
+        },
+        // grid: {
+        //     top: "20px",
+        //     bottom:'20px',
+        // },
+        legend: {
+            show: false,
+            left: 'center',
+            top: 'bottom',
+            icon: 'roundRect',
+            itemHeight: 8, // 设置高度
+            data: ['电流', '电压'],
+        },
+        series: [
+            {
+                type: 'pie',
+                selectedMode: 'single',
+                radius: [0, '25%'],
+                label: {
+                    position: 'inner'
+                },
+                itemStyle: {
+                    borderWidth: 1, //设置border的宽度有多大
+                    borderColor: '#fff',
+                },
+                color: ["#3375e2", "#3eb6fb",],
+                labelLine: {
+                    show: false
+                },
+                data: data1
+                // data: [
+                //     { value: 200, name: '电流', selected: true },
+                //     { value: 400, name: '电压' },
+                // ]
+            },
+            {
+                type: 'pie',
+                radius: ['30%', '45%'],
+                label: {
+                    formatter: function (params) {
+                        let str = `${params.data.leName}\n${params.data.typeName}${params.percent}%\n${params.data.value}次`;
+                        return str;
+                    },
+                    align: 'left'
+                },
+                labelLine: {
+                    length: 10,
+                    length2: 7
+                },
+                fontSize: 10,
+                itemStyle: {
+                    borderWidth: 1, //设置border的宽度有多大
+                    borderColor: '#fff',
+                },
+                color: ['#d3766b', '#f6cb91', '#f6cb91', '#d3766b'],
+                data: data2
+                // data: [
+                //     { value: 100, name: '电流1' },
+                //     { value: 100, name: '电流2' },
+                //     { value: 200, name: '电压1' },
+                //     { value: 200, name: '电压2' },
+                // ]
+            }
+        ]
+    }
+    return options;
+}
+// 事件统计分析
+export const optionEvent = {
+    title: {
+        show: false
+    },
+    tooltip: {
+        trigger: 'item',
+    },
+    legend: {
+        left: 'center',
+        top: 'bottom',
+        icon: 'roundRect',
+        itemHeight: 8, // 设置高度
+        data: ['电流', '电流', '电压', '电压']
+    },
+    series: [
+        {
+            type: 'pie',
+            selectedMode: 'single',
+            radius: [0, '30%'],
+            label: {
+                position: 'inner'
+            },
+            color: ["#3375e2", "#3eb6fb",],
+            labelLine: {
+                show: false
+            },
+            data: [
+                { value: 200, name: '电流', selected: true },
+                { value: 400, name: '电压' },
+            ]
+        },
+        {
+            type: 'pie',
+            radius: ['40%', '55%'],
+            label: {
+                formatter: '{b|{b}}\n严重警告 {d}%\n{c}次',
+                rich: {
+                    b: {
+                        color: '#777',
+                        lineHeight: 22,
+                    },
+                }
+            },
+            color: ['#d3766b', '#f6cb91', '#f6cb91', '#d3766b'],
+            data: [
+                { value: 100, name: '电流1' },
+                { value: 100, name: '电流2' },
+                { value: 200, name: '电压1' },
+                { value: 200, name: '电压2' },
+            ]
+        }
+    ]
+}
+// 日期处理 函数
+const newStrMonth = (str, type) => {
+    str = str.toString();
+    let newStr;
+    switch (type) {
+        case 'day':
+            newStr = getDay(0, "yyyy-MM-dd", str)
+            break;
+        case 'month':
+            newStr =
+                str.slice(0, 4) + "-" + str.slice(4, 6);
+            break;
+        case 'quarter':
+            let yearName = str.slice(0, 4);
+            let jum = numChangeZ(str.slice(4, 5));
+            console.log();
+            newStr = `${yearName}年${jum}季度`
+            break;
+        case 'halfYear':
+            let yearNameh = str.slice(0, 4);
+            let jumh = str.slice(4, 5);
+            newStr = `${yearNameh}年${jumh == 1 ? '上半年' : '下半年'}`
+            break;
+    }
+    return newStr;
+};
+// 数字转中文
+const numChangeZ = (num) => {
+    let newStr;
+    switch (num.toString()) {
+        case '1':
+            newStr = '一'
+            break;
+        case '2':
+            newStr = '二'
+            break;
+        case '3':
+            newStr = '三'
+            break;
+        case '4':
+            newStr = '四'
+            break;
+    }
+    return newStr;
+}
+import { getDay } from "@/assets/js/formatDate";
+export const deviceDetailsEachrt = (parms1, parms2, type) => {
+    var data = JSON.parse(JSON.stringify(parms1))
+    var dictTypelist = JSON.parse(JSON.stringify(parms2))
+    var legendData = new Array(), xAxisData = new Array(), seriesData = new Array(), yAxisData = new Array(), optionData = {};
+    this.type = type;
+    if (data && Object.keys(data).length != 0) {
+        // legendData
+        dictTypelist.list.forEach((item, index) => {
+            if (data[item.id]) {
+                legendData.push({
+                    name: item.value,
+                    textStyle: {
+                        fontSize: 12,
+                        color: "#595959"
+                    },
+                    icon: `image://${iconArray[index]}`
+                })
+            }
+        })
+        // Object.keys(data)[0] 第一个key   obj[Object.keys(obj)[0]] 第一个值
+        let firstData = data[Object.keys(data)[0]];
+        // x轴坐标刻度值 xAxisData
+        if (firstData && firstData.length > 8) {
+            firstData = firstData.slice(-8);
+        }
+        xAxisData = firstData.reduce((ary, item, index) => {
+            if (item.recordTime) {
+                var datein = new Date(item.recordTime);
+                item.recordTime = (getDay(0, "yyyy-MM-dd hh:mm:ss", datein)).slice(11, 16);
+                ary.push(item.recordTime);
+                return ary;
+            }
+            // 天
+            if (item.date) {
+                ary.push(item.date);
+                return ary;
+            }
+            // 月
+            if (item.yearMonth) {
+                var datein = new Date(item.yearMonth);
+                item.yearMonth = newStrMonth(item.yearMonth, 'month');
+                ary.push(item.yearMonth);
+                return ary;
+            }
+            // 季度
+            if (item.quarter) {
+                var datein = new Date(item.quarter);
+                item.quarter = newStrMonth(item.quarter, 'quarter');
+                ary.push(item.quarter);
+                return ary;
+            }
+            // 半年
+            if (item.halfYear) {
+                var datein = new Date(item.halfYear);
+                item.halfYear = newStrMonth(item.halfYear, 'halfYear');
+                ary.push(item.halfYear);
+                return ary;
+            }
+            // 年
+            if (item.year) {
+                ary.push(item.year);
+                return ary;
+            }
+        }, []);
+        //数据 seriesData
+        for (var key in data) {
+            var itemName = dictTypelist.list.find(items => {
+                return items.id == key;
+            });
+            var obj = {
+                name: itemName.value,
+                type: "line", // 类型为折线图
+                smooth: true,
+                // yAxisIndex: key,
+                data: []
+            };
+            var dattta = [];
+            for (var i = 0; i < data[key].length; i++) {
+                if (i > 7) {
+                    continue;
+                } else {
+                    dattta.push(data[key][i].value.toFixed(2));
+                }
+            }
+            obj.data = dattta;
+            seriesData.push(obj);
+        }
+    }
+    // // 指定图表的配置项和数据
+    return Promise.all([legendData, xAxisData, seriesData]).then(result => {
+        optionData = {
+            tooltip: {
+                //设置tip提示
+                trigger: "axis",
+                backgroundColor: "#006fe6",
+                textStyle: {
+                    color: "#fff"
+                },
+                axisPointer: {
+                    lineStyle: {
+                        type: "dashed",
+                        color: '#006fe6',
+                    }
+                },
+                formatter: function (params) {
+                    //自定义函数修改折线图给数据加单位
+                    var str = ""; //声明一个变量用来存储数据
+                    str += "<div>" + params[0].name + "</div>"; //显示日期的函数
+                    for (var i = 0; i < params.length; i++) {
+                        //图显示的数据较多时需要循环数据，这样才可以成功的给多条数据添加单位
+                        if (i === 0) {
+                            str +=
+                                '<span style="display:inline-block;margin-right:5px;border-radius:8px;width:8px;height:8px;background-color:#fff' +
+                                ';"></span>' +
+                                params[i].seriesName +
+                                "</span> : <span>" +
+                                (params[i].data ? params[i].data + "kw/h" : "暂无") +
+                                "</br>";
+                        } else if (i === 1 || i == 2) {
+                            str +=
+                                '<span style="display:inline-block;margin-right:5px;border-radius:8px;width:8px;height:8px;background-color:#fff' +
+                                ';"></span>' +
+                                params[i].seriesName +
+                                "</span> : <span>" +
+                                (params[i].data ? params[i].data + "吨" : "暂无") +
+                                "</br>";
+                        } else if (i === 3 || i === 4) {
+                            str +=
+                                '<span style="display:inline-block;margin-right:5px;border-radius:8px;width:8px;height:8px;background-color:#fff' +
+                                ';"></span>' +
+                                params[i].seriesName +
+                                "</span> : <span>" +
+                                (params[i].data ? params[i].data + "m3" : "暂无") +
+                                "</br>";
+                        }
+                    }
+                    return str;
+                }
+            },
+            grid: {
+                top: this.type ? "40px" : "15px",
+                bottom: this.type ? "25%" : "15%",
+                left: this.type ? "70px" : "50px",
+                right: this.type ? "70px" : "40px"
+            },
+            legend: {
+                show: this.type,
+                bottom: "0",
+                padding: 5,
+                itemGap: 25,
+                itemWidth: 18, // 设置宽度
+                itemHeight: 8, // 设置高度
+                data: []
+            },
+            color: ["#006fe6", "#62d8ed", "#9ca5ff", "#9e66e4", "#dc81ac"], //设置区分（每条线是什么颜色，和 legend 一一对应）
+            xAxis: {
+                //设置x轴
+                type: "category",
+                data: [],
+                boundaryGap: false, //坐标轴两边不留白
+                nameTextStyle: {
+                    color: "#999999"
+                },
+                axisTick: { show: false },
+                splitLine: { show: false },
+                axisLine: {
+                    //坐标轴轴线相关设置。
+                    lineStyle: {
+                        color: "#999999"
+                    }
+                },
+            },
+            dataZoom: [
+                {
+                    show: this.type,
+                    type: "slider",
+                    xAxisIndex: 0,
+                    bottom: "10%",
+                    showDetail: false,
+                    filterMode: "empty"
+                },
+            ],
+            yAxis: [{
+                type: 'value',
+                name: '',
+                position: 'left',
+                nameTextStyle: {
+                    color: "#999999"
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: "#e6e6e6"
+                    }
+                },
+                axisTick: { show: false },
+                axisLabel: {
+                    formatter: "{value}",
+                    color: "#999999"
+                }
+            }],
+            series: []
+        };
+        optionData.legend.data = Array.from(result[0]);
+        optionData.xAxis.data = Array.from(result[1]);
+        optionData.series = Array.from(result[2]);
+        return optionData;
+    })
+}
+// 初始化状态
+const option = {
+    tooltip: {
+        //设置tip提示
+        trigger: "axis",
+        backgroundColor: "#006fe6",
+        textStyle: {
+            color: "#fff"
+        },
+        axisPointer: {
+            lineStyle: {
+                type: "dashed",
+                color: '#006fe6',
+            }
+        },
+        formatter: function (params) {
+            //自定义函数修改折线图给数据加单位
+            var str = ""; //声明一个变量用来存储数据
+            str += "<div>" + params[0].name + "</div>"; //显示日期的函数
+            for (var i = 0; i < params.length; i++) {
+                //图显示的数据较多时需要循环数据，这样才可以成功的给多条数据添加单位
+                if (i === 0) {
+                    str +=
+                        '<span style="display:inline-block;margin-right:5px;border-radius:8px;width:8px;height:8px;background-color:#fff' +
+                        ';"></span>' +
+                        params[i].seriesName +
+                        "</span> : <span>" +
+                        (params[i].data ? params[i].data + "kw/h" : "暂无") +
+                        "</br>";
+                } else if (i === 1 || i == 2) {
+                    str +=
+                        '<span style="display:inline-block;margin-right:5px;border-radius:8px;width:8px;height:8px;background-color:#fff' +
+                        ';"></span>' +
+                        params[i].seriesName +
+                        "</span> : <span>" +
+                        (params[i].data ? params[i].data + "吨" : "暂无") +
+                        "</br>";
+                } else if (i === 3 || i === 4) {
+                    str +=
+                        '<span style="display:inline-block;margin-right:5px;border-radius:8px;width:8px;height:8px;background-color:#fff' +
+                        ';"></span>' +
+                        params[i].seriesName +
+                        "</span> : <span>" +
+                        (params[i].data ? params[i].data + "m³" : "暂无") +
+                        "</br>";
+                }
+            }
+            return str;
+        }
+    },
+    grid: {
+        top: this.type ? "50px" : "30px",
+        bottom: this.type ? "110px" : "15%",
+        left: this.type ? "50px" : "40px",
+        right: this.type ? "50px" : "40px"
+    },
+    legend: {
+        show: this.type,
+        bottom: "0",
+        padding: 5,
+        itemGap: 25,
+        itemWidth: 18, // 设置宽度
+        itemHeight: 8, // 设置高度
+        data: [
+            {
+                name: "电能",
+                textStyle: {
+                    fontSize: 12,
+                    color: "#595959"
+                },
+                icon: `image://${icon1}`
+            },
+            {
+                name: "水能",
+                textStyle: {
+                    fontSize: 12,
+                    color: "#595959"
+                },
+                icon: `image://${icon2}`
+            },
+            {
+                name: "天然气",
+                textStyle: {
+                    fontSize: 12,
+                    color: "#595959"
+                },
+                icon: `image://${icon3}`
+            },
+            {
+                name: "煤",
+                textStyle: {
+                    fontSize: 12,
+                    color: "#595959"
+                },
+                icon: `image://${icon4}`
+            },
+            {
+                name: "水蒸气",
+                textStyle: {
+                    fontSize: 12,
+                    color: "#595959"
+                },
+                icon: `image://${icon5}`
+            }
+        ]
+    },
+    color: ["#006fe6", "#62d8ed", "#9ca5ff", "#9e66e4", "#dc81ac"], //设置区分（每条线是什么颜色，和 legend 一一对应）
+    xAxis: {
+        //设置x轴
+        type: "category",
+        boundaryGap: false, //坐标轴两边不留白
+        nameTextStyle: {
+            color: "#999999"
+        },
+        data: ["08:00", "08:05", "08:10", "08:15", "08:20", "08:25"],
+        axisLine: {
+            //坐标轴轴线相关设置。
+            lineStyle: {
+                color: "#999999"
+            }
+        },
+        axisTick: { show: false },
+        splitLine: {
+            show: false
+        }
+    },
+    dataZoom: [
+        {
+            show: this.type,
+            type: "slider",
+            xAxisIndex: 0,
+            bottom: "40px",
+            filterMode: "empty"
+        },
+        {
+            type: 'inside',
+            show: true,
+         }
+    ],
+    yAxis: [
+        {
+            type: "value",
+            name: this.type ? "电(kw/h)" : "电能",
+            min: 0,
+            max: 1000,
+            nameTextStyle: {
+                color: "#999999"
+            },
+            position: "left", // y轴在左侧
+            axisLine: {
+                lineStyle: {
+                    color: "#e6e6e6"
+                }
+            },
+            axisTick: { show: false },
+            axisLabel: {
+                formatter: "{value}",
+                color: "#999999"
+            }
+        },
+        {
+            type: "value",
+            name: this.type ? "水(吨)" : "水",
+            nameTextStyle: {
+                color: "#999999"
+            },
+            min: 0,
+            max: 1000,
+            position: "left", // y轴在左侧
+            offset: -50,
+            axisLine: {
+                lineStyle: {
+                    color: "#e6e6e6"
+                }
+            },
+            axisTick: { show: false },
+            axisLabel: {
+                formatter: "{value}",
+                color: "#999999"
+            }
+        },
+        {
+            type: "value",
+            name: this.type ? "水蒸气(吨)" : "水蒸气",
+            nameTextStyle: {
+                color: "#999999"
+            },
+            position: "left", // y轴在左侧
+            offset: -100,
+            min: 0,
+            max: 1000,
+            axisLine: {
+                lineStyle: {
+                    color: "#e6e6e6"
+                }
+            },
+            axisTick: { show: false },
+            axisLabel: {
+                formatter: "{value}",
+                color: "#999999"
+            }
+        },
+        {
+            type: "value",
+            name: this.type ? "煤(吨)" : "煤",
+            nameTextStyle: {
+                color: "#999999"
+            },
+            position: "right", // y轴在左侧
+            offset: -50,
+            min: 0,
+            max: 1000,
+            axisLine: {
+                lineStyle: {
+                    color: "#e6e6e6"
+                }
+            },
+            axisTick: { show: false },
+            axisLabel: {
+                formatter: "{value}",
+                color: "#999999"
+            }
+        },
+        {
+            type: "value",
+            name: this.type ? "天然气(m³)" : "天然气",
+            nameTextStyle: {
+                color: "#999999"
+            },
+            position: "right", // y轴在左侧
+            min: 0,
+            max: 1000,
+            axisLine: {
+                lineStyle: {
+                    color: "#e6e6e6"
+                }
+            },
+            axisTick: { show: false },
+            axisLabel: {
+                formatter: "{value}",
+                color: "#999999"
+            }
+        }
+    ],
+    series: [
+        {
+            name: "电能",
+            data: [220, 232, 201, 234, 290, 230, 220],
+            type: "line", // 类型为折线图
+            smooth: true,
+            markArea: {
+                data: this.type
+                    ? [
+                        [
+                            {
+                                xAxis: "08:00",
+                                yAxis: 0,
+                                itemStyle: {
+                                    color: "#53bcff"
+                                }
+                            },
+                            {
+                                xAxis: "08:05",
+                                yAxis: 25,
+                                itemStyle: {
+                                    color: "#53bcff"
+                                }
+                            }
+                        ],
+                        [
+                            {
+                                xAxis: "08:05",
+                                yAxis: 0,
+                                itemStyle: {
+                                    color: "#ffca59"
+                                }
+                            },
+                            {
+                                xAxis: "08:10",
+                                yAxis: 25,
+                                itemStyle: {
+                                    color: "#ffca59"
+                                }
+                            }
+                        ],
+                        [
+                            {
+                                xAxis: "08:10",
+                                yAxis: 0,
+                                itemStyle: {
+                                    color: "#53bcff"
+                                }
+                            },
+                            {
+                                xAxis: "08:20",
+                                yAxis: 20,
+                                itemStyle: {
+                                    color: "#53bcff"
+                                }
+                            }
+                        ],
+                        [
+                            {
+                                xAxis: "08:20",
+                                yAxis: 0,
+                                itemStyle: {
+                                    color: "#abb6c4"
+                                }
+                            },
+                            {
+                                xAxis: "08:25",
+                                yAxis: 25,
+                                itemStyle: {
+                                    color: "#abb6c4"
+                                }
+                            }
+                        ]
+                    ]
+                    : []
+            }
+        },
+        {
+            name: "水",
+            smooth: true,
+            show: this.type,
+            data: [120, 200, 150, 80, 70, 110, 130],
+            type: "line"
+        },
+        {
+            name: "天然气",
+            smooth: true,
+            show: this.type,
+            data: [10, 230, 450, 180, 170, 210, 530],
+            type: "line"
+        },
+        {
+            name: "煤",
+            smooth: true,
+            show: this.type,
+            data: [150, 500, 50, 830, 170, 510, 230],
+            type: "line"
+        },
+        {
+            name: "水蒸气",
+            smooth: true,
+            show: this.type,
+            data: [140, 250, 110, 280, 370, 410, 30],
+            type: "line"
+        }
+    ]
+}
+// 事件统计咱比图
+export const eventStatisChart = (legendData, seriesData) => {
+    let optins = {
+        title: {
+            show: false
+        },
+        tooltip: {
+            trigger: "item",
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        color: [
+            "#695bea",
+            "#82e2e4",
+            "#ffd86f",
+            "#74b4fc",
+            "#a3e4ff",
+            "#8481f7"
+        ],
+        legend: {
+            show: false,
+            orient: "vertical",
+            left: "left",
+            data: legendData
+            // data: [
+            //     "设备故障",
+            //     "其他",
+            //     "管道泄漏",
+            //     "违规操作",
+            //     "功能超限",
+            //     "排放故障"
+            // ]
+        },
+        series: [
+            {
+                name: "访问来源",
+                type: "pie",
+                radius: "70%",
+                center: ["50%", "50%"],
+                label: {
+                    formatter: function (params) {
+                        console.log(23213, params);
+                        let str = `${params.data.name}：${params.data.value}次\n平均处理时长${params.data.min}h`;
+                        return str;
+                    },
+                    rich: {}
+                },
+                // data: [
+                //     { value: 335, name: "设备故障", ff: 2323 },
+                //     { value: 510, name: "其他", ff: 2323 },
+                //     { value: 234, name: "管道泄漏", ff: 2323 },
+                //     { value: 135, name: "违规操作", ff: 2323 },
+                //     { value: 1548, name: "功能超限", ff: 2323 },
+                //     { value: 1548, name: "排放故障", ff: 2323 }
+                // ],
+                data: seriesData,
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: "rgba(0, 0, 0, 0.5)"
+                    }
+                }
+            }
+        ]
+    }
+    return optins;
+}
